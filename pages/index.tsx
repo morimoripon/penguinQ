@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material';
 import type { NextPage } from 'next'
 import Link from 'next/link';
+import client from '../lib/client';
 import { QuestionData } from '../lib/types';
 
 type Props = {
@@ -8,7 +9,6 @@ type Props = {
 }
 
 const Home: NextPage<Props> = ({ questions }) => {
-
   return (
     <Box
       width='100%'
@@ -36,13 +36,25 @@ const Home: NextPage<Props> = ({ questions }) => {
 }
 
 export const getStaticProps = async () => {
-  const response = await fetch(`http://localhost:3000/api/question`);
-  const result = await response.json();
+  const result = await client.getList({
+    endpoint: 'questions',
+    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d' },
+  })
 
-  if (!Array.isArray(result)) return;
+  const questions = result.contents.map(question => ({
+    id: question.number,
+    question: question.question,
+    answer: question.answer,
+    a: question.answer_a,
+    b: question.answer_b,
+    c: question.answer_c,
+    d: question.answer_d,
+  }));
+
+  questions.sort((qa, qb) => qa.id - qb.id);
 
   return {
-    props: { questions: result }
+    props: { questions }
   }
 }
 
