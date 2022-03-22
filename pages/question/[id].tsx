@@ -4,6 +4,7 @@ import { AppContextType } from 'next/dist/shared/lib/utils';
 import { useRouter } from 'next/router';
 import { Header } from '../../components/Header';
 import { Model } from '../../components/Model';
+import client from '../../lib/client';
 import { QuestionData } from '../../lib/types';
 
 const QuestionPage: NextPage<QuestionData> = ({ id, question, a, b, c, d }) => {
@@ -22,25 +23,31 @@ const QuestionPage: NextPage<QuestionData> = ({ id, question, a, b, c, d }) => {
 }
 
 export const getStaticProps = async (context: any) => {
-  const postId = context.params.id // context.params で、paths で指定した params を参照できる
-  console.log('postId', postId)
-  const response = await fetch(`http://localhost:3000/api/question?id=${postId}`);
-  const result = await response.json();
+  const contentId = context.params?.id;
+  if (typeof contentId !== 'string') {
+    throw new Error('contentIdがありません');
+  }
 
-  if (!Array.isArray(result) || !result[0]) return;
+  const result = await client.getList({
+    endpoint: 'questions',
+    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d' },
+  })
+
+  if (!Array.isArray(result.contents)) {
+    throw new Error('contentIdに対応するデータがありません');
+  } 
+
+  const targetQuestion = result.contents.find((question: any) => question && question.number === Number(contentId));
 
   return {
-    props: { id: result[0].id, question: result[0].question, answer: result[0].answer, a: result[0].a, b: result[0].b, c: result[0].c, d: result[0].d  }
+    props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d  }
   }
 }
 
 export const getStaticPaths = async () => {
   return {
-    paths: [
-      { params: { id: '1' } },
-      { params: { id: '2' } },
-    ],
-    fallback: false
+    paths: [],
+    fallback: true
   }
 }
 
