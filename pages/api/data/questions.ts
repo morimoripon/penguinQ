@@ -8,7 +8,8 @@ export const questions: QuestionData[] = [
     a: 'アデリーペンギン',
     b: 'イワトビペンギン',
     c: 'コウテイペンギン',
-    d: 'フンボルトペンギン'
+    d: 'フンボルトペンギン',
+    explanation: ''
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ export const questions: QuestionData[] = [
     a: 'コウテイペンギン',
     b: 'マカロニペンギン',
     c: 'ヒゲペンギン',
-    d: 'ジェンツーペンギン'
+    d: 'ジェンツーペンギン',
+    explanation: ''
   }
 ]

@@ -25,9 +25,9 @@ const Home: NextPage<Props> = ({ questions }) => {
         alignItems='center' 
         justifyContent='space-around'
       >
-        {questions.map(question => (
+        {questions.map((question, index) => (
           <Link key={question.id} href={`/question/${question.id}`}>
-            <Button variant="outlined">問題{question.id}</Button>
+            <Button variant='outlined' sx={index > 0 ? ({ marginLeft: '8px' }) : {}}>問題{question.id}</Button>
           </Link>
         ))}
       </Box>
@@ -38,7 +38,7 @@ const Home: NextPage<Props> = ({ questions }) => {
 export const getStaticProps = async () => {
   const result = await client.getList({
     endpoint: 'questions',
-    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d' },
+    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d,explanation' },
   })
 
   const questions = result.contents.map(question => ({
@@ -49,6 +49,7 @@ export const getStaticProps = async () => {
     b: question.answer_b,
     c: question.answer_c,
     d: question.answer_d,
+    explanation: question.explanation
   }));
 
   questions.sort((qa, qb) => qa.id - qb.id);

@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (context) => 
 
   const result = await client.getList({
     endpoint: 'questions',
-    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d' },
+    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d,explanation' },
   })
 
   if (!Array.isArray(result.contents)) {
@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (context) => 
   } 
 
   return {
-    props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d  }
+    props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d, explanation: targetQuestion.explanation  }
   }
 }
 
