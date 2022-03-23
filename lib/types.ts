@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from "querystring"
+
 export type Position = { 
   x: number, 
   y: number, 
@@ -29,6 +31,28 @@ export type CameraProps = {
   position?: Position
 }
 
+export type CubeProps = { 
+  size?: threeD, 
+  position?: Position, 
+  rotation?: threeD, 
+  color?: number, 
+  onIntersects?: Function
+}
+
+export type PlaneProps = { 
+  size?: number, 
+  color?: number 
+}
+
+export type TextProps = { 
+  text: string, 
+  fontJson?: any, 
+  position?: Position, 
+  textColor?: number, 
+  backgroundColor?: number, 
+  rotateY?: number
+}
+
 export type MoveState = {
   front: boolean,
   back: boolean,
@@ -36,7 +60,7 @@ export type MoveState = {
   right: boolean,
 }
 
-export type moveTuple = [number, number];
+export type moveArr = [number, number];
 
 export type PenguinAction = 'shake' | 'walk';
 
@@ -48,4 +72,8 @@ export type QuestionData = {
   b: string,
   c: string,
   d: string
+}
+
+export interface Params extends ParsedUrlQuery {
+  id: string
 }

@@ -1,12 +1,14 @@
 import { Box, Button } from '@mui/material';
-import type { GetStaticProps, NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import client from '../../lib/client';
-import { QuestionData } from '../../lib/types';
+import { Params, QuestionData } from '../../lib/types';
 
-const AnswerPage: NextPage<QuestionData & { qlength: number }> = (props) => {
+type Props = QuestionData & { qlength: number };
+
+const AnswerPage: NextPage<Props> = (props) => {
   const router = useRouter();
   const refBox = useRef<HTMLDivElement>(null);
   const refAnswerBox = useRef<HTMLDivElement>(null);
@@ -95,7 +97,7 @@ const AnswerPage: NextPage<QuestionData & { qlength: number }> = (props) => {
   </Box>);
 }
 
-export const getStaticProps = async (context: any) => {
+export const getStaticProps: GetStaticProps<Props, Params> = async (context) => {
   const contentId = context.params?.id;
   if (typeof contentId !== 'string') {
     throw new Error('contentIdがありません');
@@ -107,17 +109,21 @@ export const getStaticProps = async (context: any) => {
   })
 
   if (!Array.isArray(result.contents)) {
-    throw new Error('contentIdに対応するデータがありません');
+    throw new Error('データがありません');
   } 
 
   const targetQuestion = result.contents.find((question: any) => question && question.number === Number(contentId));
+
+  if (!targetQuestion) {
+    throw new Error('contentIdに対応するデータがありません');
+  } 
 
   return {
     props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d, qlength: result.contents.length  }
   }
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   return {
     paths: [],
     fallback: true

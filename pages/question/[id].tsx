@@ -1,13 +1,15 @@
 import { Box } from '@mui/material';
-import type { NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { AppContextType } from 'next/dist/shared/lib/utils';
 import { useRouter } from 'next/router';
 import { Header } from '../../components/Header';
 import { Model } from '../../components/Model';
 import client from '../../lib/client';
-import { QuestionData } from '../../lib/types';
+import { Params, QuestionData } from '../../lib/types';
 
-const QuestionPage: NextPage<QuestionData> = ({ id, question, a, b, c, d }) => {
+type Props = QuestionData;
+
+const QuestionPage: NextPage<Props> = ({ id, question, a, b, c, d }) => {
   return (<Box>
     <Header message={question}/>
     <Model 
@@ -22,7 +24,7 @@ const QuestionPage: NextPage<QuestionData> = ({ id, question, a, b, c, d }) => {
   </Box>);
 }
 
-export const getStaticProps = async (context: any) => {
+export const getStaticProps: GetStaticProps<Props, Params> = async (context) => {
   const contentId = context.params?.id;
   if (typeof contentId !== 'string') {
     throw new Error('contentIdがありません');
@@ -34,17 +36,21 @@ export const getStaticProps = async (context: any) => {
   })
 
   if (!Array.isArray(result.contents)) {
-    throw new Error('contentIdに対応するデータがありません');
+    throw new Error('データがありません');
   } 
 
   const targetQuestion = result.contents.find((question: any) => question && question.number === Number(contentId));
+
+  if (!targetQuestion) {
+    throw new Error('contentIdに対応するデータがありません');
+  } 
 
   return {
     props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d  }
   }
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   return {
     paths: [],
     fallback: true

@@ -1,16 +1,16 @@
 import { MeshBasicMaterial, Mesh, Scene, Material } from "three";
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { Position, threeD } from "./types";
+import { Position, TextProps } from "./types";
 
 type Props = {
-  textParamsArr: any[],
+  textParamsArr: TextProps[],
   scene: Scene
 }
 
 /* 直方体を管理する */
 export class TextDriver {
-  textParamsArr: any[];
+  textParamsArr: TextProps[];
   scene: Scene;
   models: TextModel[]
 
@@ -22,7 +22,7 @@ export class TextDriver {
   }
 
   // 複数のライトを生成
-  makeCubes = (textParamsArr: any[]) => {
+  makeCubes = (textParamsArr: TextProps[]) => {
     if (!Array.isArray(textParamsArr) || !textParamsArr.length) {
       return [];
     }
@@ -43,12 +43,12 @@ export class TextDriver {
 
 export class TextModel {
   position: Position;
-  rotateY: number;
+  rotateY?: number;
   geometry: TextGeometry;
   materials: Material[];
   mesh: Mesh;
 
-  constructor({ text, fontJson, position = { x: 0, y: 0, z: 0 }, textColor, backgroundColor, rotateY }: any) {
+  constructor({ text, fontJson, position = { x: 0, y: 0, z: 0 }, textColor, backgroundColor, rotateY }: TextProps) {
     const loader = new FontLoader();
     // フォントをロードする
     const font = loader.parse(fontJson);
@@ -77,7 +77,7 @@ export class TextModel {
     this.mesh.position.setZ(positionZ);
   }
 
-  setRotate = (rotateY: number) => {
+  setRotate = (rotateY?: number) => {
     if (!rotateY) return;
     this.mesh.rotateY(rotateY);
   }

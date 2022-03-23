@@ -1,13 +1,14 @@
 import { PlaneGeometry, MeshPhongMaterial, DoubleSide, Mesh, Material, Scene } from "three";
+import { PlaneProps } from "./types";
 
 type Props = {
-  planeParams: any,
+  planeParams: PlaneProps,
   scene: Scene,
 }
 
 /* 床を操作する */
 export class PlaneDriver {
-  planeParams: any[];
+  planeParams: PlaneProps;
   scene: Scene;
   model: PlaneModel;
 
@@ -32,7 +33,7 @@ export class PlaneModel {
   material: Material;
   mesh: Mesh;
 
-  constructor({ size = 500, color = 0x7777ff }) {
+  constructor({ size = 500, color = 0x7777ff }: PlaneProps) {
     this.size = size;
     this.geometry = this.makeGeometry(this.size, this.size);
     this.material = this.makeMaterial(color);

@@ -1,26 +1,27 @@
 import { PerspectiveCamera } from "three";
 import { LightDriver } from "./light";
 import { ModelDriver } from "./model";
-import { CameraProps } from "./types";
+import { CameraProps, Position } from "./types";
 
 type Props = {
   cameraParams: CameraProps,
-  lightDriver: any,
-  targetDriver?: any
+  lightDriver: LightDriver
 };
 
 /* カメラを動かす */
 export class CameraDriver {
   model: CameraModel;
-  lightDriver: any;
-  targetDriver: any;
+  lightDriver: LightDriver;
   animationComplete: boolean;
 
-  constructor({ cameraParams, lightDriver, targetDriver }: Props) {
+  constructor({ cameraParams, lightDriver }: Props) {
     this.model = new CameraModel(cameraParams);
     this.lightDriver = lightDriver;
-    this.targetDriver = targetDriver;
     this.animationComplete = false;
+  }
+
+  setPosition = ({ x, y, z }: Position) => {
+    this.model.camera.position.set(x, y, z);
   }
 
   // カメラを再レンダリング

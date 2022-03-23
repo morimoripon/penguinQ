@@ -1,14 +1,14 @@
 import { BoxGeometry, DoubleSide, Material, Mesh, MeshBasicMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, Scene, Vector3 } from "three";
-import { threeD } from "./types";
+import { CubeProps, threeD } from "./types";
 
 type Props = {
-  cubeParamsArr: any[],
+  cubeParamsArr: CubeProps[],
   scene: Scene
 }
 
 /* 直方体を管理する */
 export class CubeDriver {
-  cubeParamsArr: any[];
+  cubeParamsArr: CubeProps[];
   scene: Scene;
   models: CubeModel[]
 
@@ -20,7 +20,7 @@ export class CubeDriver {
   }
 
   // 複数のライトを生成
-  makeCubes = (cubeParamsArr: any[]) => {
+  makeCubes = (cubeParamsArr: CubeProps[]) => {
     if (!Array.isArray(cubeParamsArr) || !cubeParamsArr.length) {
       return [];
     }
@@ -48,7 +48,7 @@ export class CubeModel {
   onIntersects: Function; 
   doneIntersectsEvent: boolean;
 
-  constructor({ size = { x: 10, y: 10, z: 10 }, position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, y: 0, z: 0  }, color = 0xffffff, onIntersects = () => {} }) {
+  constructor({ size = { x: 10, y: 10, z: 10 }, position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, y: 0, z: 0  }, color = 0xffffff, onIntersects = () => {} }: CubeProps) {
     this.size = size;
     this.geometry = this.makeGeometry(this.size.x, this.size.y, this.size.z);
     this.material = this.makeMaterial(color);

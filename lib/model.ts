@@ -1,5 +1,5 @@
 import { AnimationAction, AnimationClip, AnimationMixer, Clock, Scene, Vector3 } from "three";
-import { MoveState, moveTuple, PenguinAction } from "./types";
+import { MoveState, moveArr, PenguinAction } from "./types";
 
 type Props = {
   scene: Scene,
@@ -32,7 +32,7 @@ export class ModelDriver {
     this.addToScene();
   }
 
-  move = (cameraRotation: number): moveTuple => {
+  move = (cameraRotation: number): moveArr => {
     const prevPosition = { ...this.model.scene.position };
 
     const camRot = cameraRotation * Math.PI;
@@ -43,7 +43,7 @@ export class ModelDriver {
     if (this.moveState.left) moves.push(this.getLeftMove(camRot));
     if (this.moveState.right) moves.push(this.getRightMove(camRot));
 
-    const moveReducer = (acc: moveTuple, [ x, z ]: moveTuple) => {
+    const moveReducer = (acc: moveArr, [ x, z ]: moveArr) => {
       acc[0] += x;
       acc[1] += z;
       return acc;
@@ -67,19 +67,19 @@ export class ModelDriver {
     return [ moveX, moveZ ];
   }
 
-  getFrontMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveTuple => {
+  getFrontMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveArr => {
     return [ -(this.moveSpeed * Math.sin(cameraRotation)), -(this.moveSpeed * Math.cos(cameraRotation)) ];
   }
 
-  getBackMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveTuple => {
+  getBackMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveArr => {
     return [ (this.moveSpeed * Math.sin(cameraRotation)), (this.moveSpeed * Math.cos(cameraRotation)) ];
   }
 
-  getLeftMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveTuple => {
+  getLeftMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveArr => {
     return [ -(this.moveSpeed * Math.cos(cameraRotation)), (this.moveSpeed * Math.sin(cameraRotation)) ];
   }
 
-  getRightMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveTuple => {
+  getRightMove = (cameraRotation: number, position: Vector3 = this.model.scene.position): moveArr => {
     return [  (this.moveSpeed * Math.cos(cameraRotation)), -(this.moveSpeed * Math.sin(cameraRotation)) ];
   }
 
