@@ -1,16 +1,15 @@
-import { WebGLRenderer, Color, Scene, SkeletonHelper } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { WebGLRenderer, Color, Scene } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { FC, useEffect, useRef, useState } from 'react';
 import { ModelDriver } from '../lib/model';
 import { LightDriver } from '../lib/light';
-import { LightProps, MoveState } from '../lib/types';
+import { LightProps } from '../lib/types';
 import { CameraDriver } from '../lib/camera';
-import { PlaneDriver, PlaneModel } from '../lib/plane';
-import { CubeDriver, CubeModel } from '../lib/cube';
+import { PlaneDriver } from '../lib/plane';
+import { CubeDriver } from '../lib/cube';
 import Router from 'next/router';
 import fontJson from '../public/fonts/GenEi_Antique_Pv5_Regular.typeface.json';
-import { TextDriver, TextModel } from '../lib/text';
+import { TextDriver } from '../lib/text';
 import { ModelController } from '../lib/modelController';
 import { CameraController } from '../lib/cameraController';
 
@@ -35,7 +34,7 @@ export const Model: FC<Props> = ({ pages, answer }: Props) => {
 
   const renderThree = () => {
     // レンダラーをリサイズする
-    const resizeRenderer = (renderer: any) => {
+    const resizeRenderer = (renderer: WebGLRenderer) => {
       const canvas = renderer.domElement;
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
@@ -101,7 +100,6 @@ export const Model: FC<Props> = ({ pages, answer }: Props) => {
     const cameraDriver = new CameraDriver({ 
       cameraParams: { fov: 45, aspect: 2, near: 0.1, far: 500, position: { x: 0, y: 5, z: 20 } }, 
       lightDriver, // ライトのインスタンス
-      targetDriver: modelDriver.model.scene, // ライトを当てる対象のインスタンス
     });
 
     const controls = new CameraController(cameraDriver, modelDriver, canvas);
@@ -131,7 +129,11 @@ export const Model: FC<Props> = ({ pages, answer }: Props) => {
       const rotY = (cameraDriver.model.camera.quaternion.y > 0 && cameraDriver.model.camera.quaternion.x > 0) ? -cameraDriver.model.camera.quaternion.y : cameraDriver.model.camera.quaternion.y;
       const [ moveX, moveZ ] = modelDriver.move(rotY);
 
-      cameraDriver.model.camera.position.set(cameraDriver.model.camera.position.x + moveX, cameraDriver.model.camera.position.y, cameraDriver.model.camera.position.z + moveZ)
+      cameraDriver.setPosition({ 
+        x: cameraDriver.model.camera.position.x + moveX, 
+        y: cameraDriver.model.camera.position.y, 
+        z: cameraDriver.model.camera.position.z + moveZ
+      });
       controls.update();
   
       renderer.render(scene, cameraDriver.model.camera);
@@ -146,10 +148,8 @@ export const Model: FC<Props> = ({ pages, answer }: Props) => {
   useEffect(() => {
     const modelLoader = new GLTFLoader();
     modelLoader.load('/gltf/penguin.glb', (gltf: GLTF) => {
-      console.log(gltf);
       setPenguinModel(gltf);
     }, undefined, (error) => {
-      console.log(error);
       console.error('3Dオブジェクトをシーンに追加できませんでした', error);
     });
   }, []);
