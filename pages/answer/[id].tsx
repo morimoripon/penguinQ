@@ -13,7 +13,7 @@ const AnswerPage: NextPage<Props> = (props) => {
   const refBox = useRef<HTMLDivElement>(null);
   const refAnswerBox = useRef<HTMLDivElement>(null);
   const userAnswer = router.query.answer;
-  const { id, answer, qlength } = props;
+  const { id, answer, explanation, qlength } = props;
 
   useEffect(() => {
     if (refBox && refBox.current && refAnswerBox && refAnswerBox.current) {
@@ -66,17 +66,23 @@ const AnswerPage: NextPage<Props> = (props) => {
           {userAnswer === answer ? (
             <>
               <Box color='red' marginBottom='24px'>正解！</Box>
-              <Box fontSize='1.5rem' marginBottom='24px'>正答：{props[answer]}</Box>
+              <Box minWidth='200px' maxWidth='600px'>
+                <Box fontSize='1.5rem' marginBottom='24px'>正答：{props[answer]}</Box>
+                <Box display='flex' fontSize='1rem' color='#777' marginBottom='24px'>
+                  <Box flexShrink='0'>解説：</Box>
+                  <Box>{explanation}</Box>
+                </Box>
+              </Box>
               <Box
                 display='flex' 
                 justifyContent='space-around'
               >
                 {qlength < nextId ? (
-                  <Link href={'/question/1'}><Button variant="outlined">初めからやり直す</Button></Link>
+                  <Link href={'/question/1'}><Button variant='outlined'>初めからやり直す</Button></Link>
                 ) : (
-                  <Link href={`/question/${nextId}`}><Button variant="outlined">次の問題に挑戦する</Button></Link>
+                  <Link href={`/question/${nextId}`}><Button variant='outlined'>次の問題に挑戦する</Button></Link>
                 )}
-                <Link href='/'><Button variant="outlined">トップへ戻る</Button></Link>
+                <Link href='/'><Button variant='outlined' sx={{ marginLeft: '8px' }}>トップへ戻る</Button></Link>
               </Box>
             </>
           ) : (
@@ -86,8 +92,8 @@ const AnswerPage: NextPage<Props> = (props) => {
                 display='flex' 
                 justifyContent='space-around'
               >
-                <Link href={`/question/${id}`}><Button variant="outlined">もう一度挑戦する</Button></Link>
-                <Link href='/'><Button variant="outlined">トップへ戻る</Button></Link>
+                <Link href={`/question/${id}`}><Button variant='outlined'>もう一度挑戦する</Button></Link>
+                <Link href='/'><Button variant='outlined' sx={{ marginLeft: '8px' }}>トップへ戻る</Button></Link>
               </Box>
             </>
           )}
@@ -105,7 +111,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (context) => 
 
   const result = await client.getList({
     endpoint: 'questions',
-    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d' },
+    queries: { fields: 'number,question,answer,answer_a,answer_b,answer_c,answer_d,explanation' },
   })
 
   if (!Array.isArray(result.contents)) {
@@ -119,7 +125,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (context) => 
   } 
 
   return {
-    props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d, qlength: result.contents.length  }
+    props: { id: targetQuestion.number, question: targetQuestion.question, answer: targetQuestion.answer, a: targetQuestion.answer_a, b: targetQuestion.answer_b, c: targetQuestion.answer_c, d: targetQuestion.answer_d, explanation: targetQuestion.explanation, qlength: result.contents.length  }
   }
 }
 

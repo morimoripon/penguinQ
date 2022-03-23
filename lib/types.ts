@@ -71,7 +71,8 @@ export type QuestionData = {
   a: string,
   b: string,
   c: string,
-  d: string
+  d: string,
+  explanation: string,
 }
 
 export interface Params extends ParsedUrlQuery {
